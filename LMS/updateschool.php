@@ -1,9 +1,29 @@
 <?php
-  $boardNo = $_GET['boardNo'];
+  $boardNo = $_POST['boardNo'] ;
   include('reusables/connection.php');
   $query = "SELECT * FROM schools WHERE `Board No` = '$boardNo'";
   $school = mysqli_query($connect, $query);
   $result = $school -> fetch_assoc();
+
+  if(isset($_POST['updateschool'])){
+    $boardname = $_POST['boardname'];
+    $language = $_POST['language'];
+    $schooltype = $_POST['schooltype'];
+
+    $query = "UPDATE schools 
+                SET (`Board` = $boardname,  
+                    `Language` = $language,
+                    `School Type` = $schooltype)
+              WHERE `Board No` = $boardNo";
+
+    $school = mysqli_query($connect, $query);
+    if($school){
+      echo 'School added successfully.';
+    }
+    else{
+      echo 'Unable to add the school, Error code: ' . mysqli_error();
+    }
+  }
 ?>
 
 <!DOCTYPE html>
@@ -51,7 +71,8 @@
     <div class="container">
       <div class="row">
         <div class="col-md-6">
-          <form action="" method="">
+          <form action="updateschool.php" method="POST">
+            <input type="hidden" name="boardNo" value="<?php echo $_POST['boardNo']  ?>">
             <div class="mb-3">
               <label for="boardname" class="form-label">Board Name</label>
               <input type="text" class="form-control" name="boardname" id="boardname" aria-describedby="boardname"
@@ -69,7 +90,7 @@
               <input type="text" class="form-control" name="schooltype" id="schooltype" aria-describedby="schooltype"
               value="<?php echo $result['School Type'] ?>">
             </div>
-            <button type="submit" class="btn btn-primary" name="addSchool">Update School</button>
+            <button type="submit" class="btn btn-primary" name="updateschool">Update School</button>
           </form>
         </div>
       </div>
